@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarNexus | Manage Inventory</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../styles/style.css">
+</head>
+<body data-theme="dark">
+    <div class="app-container">
+        <header class="top-header">
+            <a href="index.html" class="logo-container">
+                <img src="../assets/images/logo.png" alt="CarNexus Logo">
+                <span>CARNEXUS</span>
+            </a>
+
+            <div class="search-box">
+                <i data-lucide="search"></i>
+                <input type="text" placeholder="Search inventory (₹)...">
+            </div>
+
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-item">Home</a>
+                <a href="cars.html" class="nav-item">Cars</a>
+                <a href="add-car.html" class="nav-item">Add Car</a>
+                <a href="manage-cars.html" class="nav-item active">Manage</a>
+                <a href="bookings.html" class="nav-item">Bookings</a>
+                <a href="customers.html" class="nav-item">Customers</a>
+                <a href="reports.html" class="nav-item">Reports</a>
+                <a href="contact.html" class="nav-item">Contact</a>
+                <a href="login.html" class="nav-item">Login</a>
+                <a href="admin.html" class="nav-item">Admin Panel</a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="header-flex" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <h1>Manage Inventory</h1>
+                <a href="add-car.html" class="btn btn-primary" style="text-decoration: none;">+ Add New Vehicle</a>
+            </div>
+            
+            <div class="glass-panel">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 1px solid var(--border);">
+                            <th style="padding: 15px;">Car Model</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Availability</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="manage-cars-body">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <footer style="padding: 40px 5%; border-top: 1px solid var(--border); text-align: center; color: var(--text-dim);">
+            <p>&copy; 2024 CarNexus Premium. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="../services/app.js"></script>
+    <script>
+        lucide.createIcons();
+        if (typeof renderManageCars === 'function') {
+            renderManageCars();
+        }
+    </script>
+</body>
+</html>
