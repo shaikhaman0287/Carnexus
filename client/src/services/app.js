@@ -2,7 +2,7 @@
 // CarNexus - Frontend App Logic (API-Connected Edition)
 // =============================================================
 
-const API_BASE = 'http://localhost:5001/api';
+const API_BASE = (window.CARNEXUS_API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:5001/api' : '/api')).replace(/\/$/, '');
 
 // ─── Utility: Session ─────────────────────────────────────
 function getSession() {
