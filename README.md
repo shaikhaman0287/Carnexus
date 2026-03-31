@@ -55,7 +55,7 @@ Enjoy the drastically cleaner, optimized, and stable CarNexus core!
 ## Deploy to Vercel
 
 This repo is configured for a single Vercel project that serves:
-- static frontend files from `client/src`
+- static frontend files from `client/src` (with HTML pages under `client/src/pages`)
 - backend API from `server/server.js` (Express serverless function)
 
 ### Steps
@@ -69,3 +69,4 @@ This repo is configured for a single Vercel project that serves:
   - Local: `http://localhost:5001/api`
   - Vercel: `/api`
 - Optional override: set `window.CARNEXUS_API_BASE` before `app.js` loads if you want a custom API URL.
+- Vercel rewrites map `*.html` URLs to `client/src/pages/*.html`.
