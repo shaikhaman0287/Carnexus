@@ -51,3 +51,21 @@ While the project directories currently serve a frontend-heavy architecture (wit
 
 Enjoy the drastically cleaner, optimized, and stable CarNexus core!
 # Carnexus
+
+## Deploy to Vercel
+
+This repo is configured for a single Vercel project that serves:
+- static frontend files from `client/src`
+- backend API from `server/server.js` (Express serverless function)
+
+### Steps
+1. Push this repository to GitHub.
+2. In Vercel, click **Add New Project** and import the repo.
+3. Keep the default **Framework Preset: Other**.
+4. Deploy (no special build command is required because `vercel.json` is included).
+
+### Notes
+- Frontend API base URL is automatic:
+  - Local: `http://localhost:5001/api`
+  - Vercel: `/api`
+- Optional override: set `window.CARNEXUS_API_BASE` before `app.js` loads if you want a custom API URL.
