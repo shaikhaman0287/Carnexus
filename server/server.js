@@ -30,6 +30,11 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/src', 'index.html'));
 });
 
-app.listen(PORT, () => {
-    console.log(`Server executing gracefully on port ${PORT}`);
-});
+
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server executing gracefully on port ${PORT}`);
+    });
+}
+
+module.exports = app;
