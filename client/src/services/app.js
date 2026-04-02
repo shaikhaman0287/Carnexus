@@ -2,7 +2,13 @@
 // CarNexus - Frontend App Logic (API-Connected Edition)
 // =============================================================
 
-const API_BASE = (window.CARNEXUS_API_BASE || (window.location.hostname === 'localhost' ? 'http://localhost:5001/api' : '/api')).replace(/\/$/, '');
+const host = window.location.hostname;
+const isLoopbackHost = ['localhost', '127.0.0.1', '::1'].includes(host);
+const isPrivateIpv4Host = /^10\./.test(host) || /^192\.168\./.test(host) || /^172\.(1[6-9]|2\d|3[0-1])\./.test(host);
+const isLocalLikeHost = isLoopbackHost || isPrivateIpv4Host || host === '0.0.0.0' || host.endsWith('.local');
+const isFileProtocol = window.location.protocol === 'file:';
+const localApiBase = isFileProtocol ? 'http://localhost:5001/api' : `${window.location.protocol}//${host}:5001/api`;
+const API_BASE = (window.CARNEXUS_API_BASE || (isLocalLikeHost || isFileProtocol ? localApiBase : '/api')).replace(/\/$/, '');
 
 // ─── Utility: Session ─────────────────────────────────────
 function getSession() {
@@ -231,7 +237,8 @@ window.handleLogin = async function() {
             window.location.href = data.user.role === 'admin' ? 'admin.html' : 'index.html';
         }, 800);
     } catch (err) {
-        showToast('Invalid email or password.', 'error');
+        const msg = (err && err.message) ? err.message : 'Login failed. Please try again.';
+        showToast(msg, 'error');
         if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
     }
 };

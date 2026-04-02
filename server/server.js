@@ -24,10 +24,31 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Internal Server Error', message: err.message });
 });
 
-// Serve frontend static folder
-app.use(express.static(path.join(__dirname, '../client/src')));
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/src', 'index.html'));
+// Serve frontend static assets
+const clientRoot = path.join(__dirname, '../client/src');
+const pagesRoot = path.join(clientRoot, 'pages');
+
+app.use(express.static(clientRoot));
+
+// Keep local routes consistent with Vercel rewrites:
+//   /                -> /client/src/pages/index.html
+//   /something.html  -> /client/src/pages/something.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(pagesRoot, 'index.html'));
+});
+
+app.get('/:page([a-zA-Z0-9-]+\\.html)', (req, res, next) => {
+    const filePath = path.join(pagesRoot, req.params.page);
+    res.sendFile(filePath, (err) => {
+        if (err) next();
+    });
+});
+
+// Fallback for page deep-links only (avoid returning HTML for missing assets/API)
+app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    if (path.extname(req.path)) return res.status(404).end();
+    res.sendFile(path.join(pagesRoot, 'index.html'));
 });
 
 
