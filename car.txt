@@ -1,0 +1,227 @@
+craete a only frontend website using give prompt and downlaod all required images by online and save them in image folder and add background image online and save them in image folder and given logo and save them in image folder : 1. Dashboard
+
+The first page users see.
+
+What to show:
+
+Total cars in the system
+
+Cars available / sold / under maintenance
+
+Recent activities
+
+Quick statistics (charts)
+
+UI ideas
+
+Cards with numbers
+
+Graphs (monthly sales, service history)
+
+Recent car entries
+
+2. Car List Page
+
+A page that displays all cars.
+
+Features
+
+Table or card layout
+
+Search bar
+
+Filters
+
+Filters
+
+Brand
+
+Price
+
+Fuel type
+
+Status (Available / Sold / Maintenance)
+
+Car card should show
+
+Car image
+
+Name
+
+Price
+
+Status
+
+View / Edit / Delete buttons
+
+3. Add New Car Page
+
+A form to add a car.
+
+Fields
+
+Car Name
+
+Brand
+
+Model
+
+Year
+
+Price
+
+Fuel Type
+
+Transmission
+
+Mileage
+
+Color
+
+Car Image Upload
+
+Status
+
+4. Car Details Page
+
+When a user clicks a car.
+
+Show
+
+Large car images
+
+Full specifications
+
+Price
+
+Owner details
+
+Service history
+
+Edit / Delete option
+
+5. Maintenance / Service Tracking
+
+Useful for management.
+
+Features
+
+Add service record
+
+Service date
+
+Cost
+
+Description
+
+Next service reminder
+
+6. Booking / Sales Section
+
+If cars are sold or rented.
+
+Include
+
+Customer name
+
+Contact details
+
+Booking date
+
+Car selected
+
+Payment status
+
+7. Customer Management
+
+Manage buyers or renters.
+
+Fields
+
+Name
+
+Phone
+
+Email
+
+Address
+
+Cars purchased / rented
+
+8. Reports & Analytics
+
+Helps management understand data.
+
+Examples
+
+Monthly sales
+
+Most popular car brands
+
+Revenue charts
+
+Maintenance costs
+
+9. Notifications
+
+Helpful feature.
+
+Examples:
+
+Service due
+
+Car sold
+
+New booking
+
+10. Authentication Pages
+
+Basic but important.
+
+Login
+
+Register
+
+Forgot password
+
+Profile settings
+
+11. UI Features That Make It Professional
+
+Add these to improve the frontend:
+
+Dark / Light mode
+
+Responsive design (mobile friendly)
+
+Loading animations
+
+Image preview before upload
+
+Pagination for car list
+
+Toast notifications
+
+12. Optional Advanced Features (Very Impressive)
+
+If this is for a college project or portfolio, add:
+
+Car comparison
+
+AI price prediction
+
+Map for dealership locations
+
+Export reports (PDF / Excel)
+
+Role-based login (Admin / Staff)
+
+✅ Suggested Frontend Tech Stack
+
+React or Next.js
+
+Tailwind CSS
+
+Chart.js for graphs
+
+Axios for API calls.  in this  only use html, css, javascrtipt. and give website name: CarNexus 

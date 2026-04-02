@@ -1,0 +1,1 @@
+{ "name": "carnexus-client", "version": "1.0.0", "scripts": { "start": "echo 'Serve static via web server'" } }
