@@ -1,17 +1,26 @@
-const { readDB } = require('../dataStore');
+const { readDB, DEFAULT_USERS } = require('../dataStore');
 const crypto = require('crypto');
 const { saveSession, destroySession } = require('../middleware/auth');
 
 exports.login = (req, res) => {
     try {
-        const { email, password } = req.body;
+        const rawEmail = typeof req.body?.email === 'string' ? req.body.email : '';
+        const rawPassword = typeof req.body?.password === 'string' ? req.body.password : '';
+        const email = rawEmail.trim().toLowerCase();
+        const password = rawPassword.trim();
 
         if (!email || !password) {
             return res.status(400).json({ error: 'Email and password are required' });
         }
 
         const db = readDB();
-        const user = db.users.find(u => u.email === email && u.password === password);
+        const users = Array.isArray(db.users) && db.users.length ? db.users : DEFAULT_USERS;
+        const user = users.find(u =>
+            typeof u.email === 'string' &&
+            typeof u.password === 'string' &&
+            u.email.trim().toLowerCase() === email &&
+            u.password.trim() === password
+        );
 
         if (!user) {
             return res.status(401).json({ error: 'Invalid credentials' });

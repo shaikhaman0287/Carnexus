@@ -231,7 +231,8 @@ window.handleLogin = async function() {
             window.location.href = data.user.role === 'admin' ? 'admin.html' : 'index.html';
         }, 800);
     } catch (err) {
-        showToast('Invalid email or password.', 'error');
+        const msg = (err && err.message) ? err.message : 'Login failed. Please try again.';
+        showToast(msg, 'error');
         if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
     }
 };
