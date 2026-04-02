@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarNexus | Bookings & Reservations</title>
+    <meta name="description" content="Manage car bookings and reservations on CarNexus.">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../styles/style.css">
+    <style>
+        /* Booking Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            animation: slideIn 0.2s ease;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to   { transform: translateY(0);     opacity: 1; }
+        }
+        .booking-status-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+        .status-pending   { background: rgba(255,193,7,0.2);  color: #ffc107; border: 1px solid #ffc107; }
+        .status-confirmed { background: rgba(40,167,69,0.2);  color: #28a745; border: 1px solid #28a745; }
+        .status-cancelled { background: rgba(220,53,69,0.2);  color: #dc3545; border: 1px solid #dc3545; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-dim); }
+        .empty-state i { width: 56px; height: 56px; margin-bottom: 16px; opacity: 0.4; }
+    </style>
+</head>
+<body data-theme="dark">
+
+<!-- Booking Modal -->
+<div class="modal-overlay" id="booking-modal">
+    <div class="modal-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+            <h2 style="margin:0;">Book a Vehicle</h2>
+            <button onclick="closeBookingModal()" style="background:none;border:none;cursor:pointer;color:var(--text-dim);">
+                <i data-lucide="x" style="width:22px;height:22px;"></i>
+            </button>
+        </div>
+        <div id="modal-car-info" style="background:var(--bg-glass); border-radius:10px; padding:16px; margin-bottom:24px; display:flex; gap:12px; align-items:center;">
+            <img id="modal-car-img" src="" style="width:64px;height:48px;object-fit:cover;border-radius:6px;" onerror="this.src='../assets/images/car1.png'">
+            <div>
+                <div id="modal-car-name" style="font-weight:700;"></div>
+                <div id="modal-car-price" style="color:var(--primary); font-size:0.9rem;"></div>
+            </div>
+        </div>
+        <div class="form-grid" style="grid-template-columns: 1fr;">
+            <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" id="booking-name" placeholder="Full Name">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="booking-phone" placeholder="+91 9876543210">
+            </div>
+            <div class="form-group">
+                <label>Preferred Date *</label>
+                <input type="date" id="booking-date" required>
+            </div>
+        </div>
+        <input type="hidden" id="booking-car-id">
+        <div style="display:flex; gap:12px; margin-top:8px;">
+            <button class="btn btn-secondary" onclick="closeBookingModal()" style="flex:1;">Cancel</button>
+            <button class="btn btn-primary" onclick="submitBooking()" id="confirm-booking-btn" style="flex:2;">
+                <i data-lucide="calendar-check" style="width:16px;"></i> Confirm Booking
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="app-container">
+    <header class="top-header">
+        <a href="index.html" class="logo-container">
+            <img src="../assets/images/logo.png" alt="CarNexus Logo">
+            <span>CARNEXUS</span>
+        </a>
+        <nav class="nav-menu">
+            <a href="index.html" class="nav-item">Home</a>
+            <a href="cars.html" class="nav-item">Cars</a>
+            <a href="add-car.html" class="nav-item">Add Car</a>
+            <a href="manage-cars.html" class="nav-item">Manage</a>
+            <a href="bookings.html" class="nav-item active">Bookings</a>
+            <a href="customers.html" class="nav-item">Customers</a>
+            <a href="reports.html" class="nav-item">Reports</a>
+            <a href="contact.html" class="nav-item">Contact</a>
+            <a href="login.html" class="nav-item">Login</a>
+            <a href="admin.html" class="nav-item">Admin Panel</a>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <!-- Page Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px; flex-wrap:wrap; gap:15px;">
+            <div>
+                <h1 style="margin-bottom:4px;">Bookings & Reservations</h1>
+                <p style="color:var(--text-dim); margin:0;" id="bookings-subtitle">Manage all vehicle reservations</p>
+            </div>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <!-- Status Filter -->
+                <select id="booking-filter" onchange="applyFilter()" style="padding:10px 14px; background:var(--bg-surface); color:var(--text); border:1px solid var(--border); border-radius:8px; font-size:0.9rem;">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <a href="cars.html" class="btn btn-primary" style="text-decoration:none;">
+                    <i data-lucide="plus-circle" style="width:16px;"></i> New Booking
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Row (admin only) -->
+        <div id="booking-stats" class="stats-grid" style="display:none; margin-bottom:30px;"></div>
+
+        <!-- Bookings Table -->
+        <div class="glass-panel" style="padding:0; overflow:hidden;">
+            <table style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr style="text-align:left; border-bottom:1px solid var(--border); background:rgba(255,255,255,0.03);">
+                        <th style="padding:16px 20px;">Customer</th>
+                        <th style="padding:16px 12px;">Vehicle</th>
+                        <th style="padding:16px 12px;">Date</th>
+                        <th style="padding:16px 12px;">Status</th>
+                        <th style="padding:16px 12px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="bookings-table-body">
+                    <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-dim);">
+                        <div style="display:flex;align-items:center;justify-content:center;gap:8px;">
+                            <i data-lucide="loader" style="animation:spin 1s linear infinite;width:18px;"></i> Loading...
+                        </div>
+                    </td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer style="padding:40px 5%; border-top:1px solid var(--border); text-align:center; color:var(--text-dim);">
+        <p>&copy; 2024 CarNexus Premium. All rights reserved.</p>
+    </footer>
+</div>
+
+<script src="../services/app.js"></script>
+<script>
+    // Set minimum booking date to today
+    document.getElementById('booking-date').min = new Date().toISOString().split('T')[0];
+
+    lucide.createIcons();
+
+    // Open modal from cars.html via ?book=carId&name=...&price=...
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('book')) {
+        window.addEventListener('load', () => {
+            openBookingModal(
+                params.get('book'),
+                params.get('name') || 'Selected Vehicle',
+                params.get('price') || '',
+                params.get('img') || '../assets/images/car1.png'
+            );
+        });
+    }
+</script>
+</body>
+</html>
