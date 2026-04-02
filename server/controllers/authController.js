@@ -1,4 +1,4 @@
-const { readDB } = require('../dataStore');
+const { readDB, DEFAULT_USERS } = require('../dataStore');
 const crypto = require('crypto');
 const { saveSession, destroySession } = require('../middleware/auth');
 
@@ -14,7 +14,7 @@ exports.login = (req, res) => {
         }
 
         const db = readDB();
-        const users = Array.isArray(db.users) ? db.users : [];
+        const users = Array.isArray(db.users) && db.users.length ? db.users : DEFAULT_USERS;
         const user = users.find(u =>
             typeof u.email === 'string' &&
             typeof u.password === 'string' &&

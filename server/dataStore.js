@@ -27,6 +27,8 @@ const initialData = {
     sessions: {} // token -> session info
 };
 
+const DEFAULT_USERS = initialData.users;
+
 // Ensure db.json exists
 if (!fs.existsSync(dbPath)) {
     fs.writeFileSync(dbPath, JSON.stringify(initialData, null, 2));
@@ -64,4 +66,4 @@ function writeDB(data) {
     fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
 }
 
-module.exports = { readDB, writeDB };
+module.exports = { readDB, writeDB, DEFAULT_USERS };

@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(pagesRoot, 'index.html'));
 });
 
-app.get('/:page([a-zA-Z0-9-]+\.html)', (req, res, next) => {
+app.get('/:page([a-zA-Z0-9-]+\\.html)', (req, res, next) => {
     const filePath = path.join(pagesRoot, req.params.page);
     res.sendFile(filePath, (err) => {
         if (err) next();
