@@ -41,10 +41,11 @@ function clearSession() {
 }
 
 // ─── Utility: Auth Headers ────────────────────────────────
-function authHeaders() {
+function authHeaders(options = {}) {
+    const { omitAuth = false } = options;
     const token = getToken();
     const headers = { 'Content-Type': 'application/json' };
-    if (token) headers['Authorization'] = `Bearer ${token}`;
+    if (!omitAuth && token) headers['Authorization'] = `Bearer ${token}`;
     return headers;
 }
 
@@ -79,13 +80,13 @@ window.showToast = function(message, type = 'info') {
 
 // ─── API Client ───────────────────────────────────────────
 const api = {
-    async get(endpoint) {
+    async get(endpoint, options = {}) {
         try {
             const res = await fetch(`${API_BASE}${endpoint}`, {
                 method: 'GET',
-                headers: authHeaders()
+                headers: authHeaders(options)
             });
-            if (handleAuthError(res.status)) throw new Error('Session expired');
+            if (!options.skipAuthHandling && handleAuthError(res.status)) throw new Error('Session expired');
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.error || `HTTP ${res.status}`);
@@ -97,14 +98,14 @@ const api = {
         }
     },
 
-    async post(endpoint, body) {
+    async post(endpoint, body, options = {}) {
         try {
             const res = await fetch(`${API_BASE}${endpoint}`, {
                 method: 'POST',
-                headers: authHeaders(),
+                headers: authHeaders(options),
                 body: JSON.stringify(body)
             });
-            if (handleAuthError(res.status)) throw new Error('Session expired');
+            if (!options.skipAuthHandling && handleAuthError(res.status)) throw new Error('Session expired');
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.error || `HTTP ${res.status}`);
@@ -116,14 +117,14 @@ const api = {
         }
     },
 
-    async put(endpoint, body) {
+    async put(endpoint, body, options = {}) {
         try {
             const res = await fetch(`${API_BASE}${endpoint}`, {
                 method: 'PUT',
-                headers: authHeaders(),
+                headers: authHeaders(options),
                 body: JSON.stringify(body)
             });
-            if (handleAuthError(res.status)) throw new Error('Session expired');
+            if (!options.skipAuthHandling && handleAuthError(res.status)) throw new Error('Session expired');
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.error || `HTTP ${res.status}`);
@@ -135,13 +136,13 @@ const api = {
         }
     },
 
-    async delete(endpoint) {
+    async delete(endpoint, options = {}) {
         try {
             const res = await fetch(`${API_BASE}${endpoint}`, {
                 method: 'DELETE',
-                headers: authHeaders()
+                headers: authHeaders(options)
             });
-            if (handleAuthError(res.status)) throw new Error('Session expired');
+            if (!options.skipAuthHandling && handleAuthError(res.status)) throw new Error('Session expired');
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.error || `HTTP ${res.status}`);
@@ -230,7 +231,7 @@ window.handleLogin = async function() {
     if (btn) { btn.disabled = true; btn.textContent = 'Signing in...'; }
 
     try {
-        const data = await api.post('/auth/login', { email, password });
+        const data = await api.post('/auth/login', { email, password }, { omitAuth: true, skipAuthHandling: true });
         setSession({ ...data.user, token: data.token });
         showToast('Login successful! Welcome, ' + data.user.name, 'success');
         setTimeout(() => {
