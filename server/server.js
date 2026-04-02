@@ -44,8 +44,10 @@ app.get('/:page([a-zA-Z0-9-]+\\.html)', (req, res, next) => {
     });
 });
 
-// Fallback for static asset deep-links
-app.get('*', (req, res) => {
+// Fallback for page deep-links only (avoid returning HTML for missing assets/API)
+app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next();
+    if (path.extname(req.path)) return res.status(404).end();
     res.sendFile(path.join(pagesRoot, 'index.html'));
 });
 
