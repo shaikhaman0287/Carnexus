@@ -27,6 +27,8 @@ const initialData = {
     sessions: {} // token -> session info
 };
 
+const DEFAULT_USERS = initialData.users;
+
 // Ensure db.json exists
 if (!fs.existsSync(dbPath)) {
     fs.writeFileSync(dbPath, JSON.stringify(initialData, null, 2));
@@ -35,6 +37,9 @@ if (!fs.existsSync(dbPath)) {
     try {
         const existing = JSON.parse(fs.readFileSync(dbPath));
         let changed = false;
+        if (!existing.cars) { existing.cars = initialData.cars; changed = true; }
+        if (!existing.customers) { existing.customers = initialData.customers; changed = true; }
+        if (!existing.users) { existing.users = initialData.users; changed = true; }
         if (!existing.bookings) { existing.bookings = initialData.bookings; changed = true; }
         if (!existing.sessions) { existing.sessions = {}; changed = true; }
         if (changed) fs.writeFileSync(dbPath, JSON.stringify(existing, null, 2));
@@ -45,8 +50,12 @@ function readDB() {
     try {
         const raw = fs.readFileSync(dbPath);
         const db = JSON.parse(raw);
+        if (!db.cars) db.cars = [];
+        if (!db.customers) db.customers = [];
+        if (!db.users) db.users = [];
         // Always ensure bookings exists
         if (!db.bookings) db.bookings = [];
+        if (!db.sessions) db.sessions = {};
         return db;
     } catch {
         return initialData;
@@ -57,4 +66,4 @@ function writeDB(data) {
     fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
 }
 
-module.exports = { readDB, writeDB };
+module.exports = { readDB, writeDB, DEFAULT_USERS };
